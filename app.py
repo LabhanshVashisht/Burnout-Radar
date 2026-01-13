@@ -3,6 +3,7 @@ import pandas as pd
 import numpy as np
 import openai
 import datetime
+import matplotlib.pyplot as plt
 
 # -------- CONFIG --------
 st.set_page_config(page_title="Burnout Radar", layout="centered")
@@ -18,7 +19,6 @@ screen = st.sidebar.slider("Screen Time (hours)", 0.0, 16.0, 6.0)
 tasks = st.sidebar.slider("Number of tasks today", 0, 10, 3)
 mood = st.sidebar.slider("Mood (1 = terrible, 5 = great)", 1, 5, 3)
 
-# Demo chaos button
 if st.sidebar.button("😈 Simulate Bad Day"):
     sleep = 4.0
     screen = 10.0
@@ -27,50 +27,43 @@ if st.sidebar.button("😈 Simulate Bad Day"):
 
 # -------- BURNOUT LOGIC --------
 
-# Normalize inputs to 0–1 scale
-sleep_score = max(0, (8 - sleep) / 8)        # less sleep → higher burnout
-screen_score = min(screen / 10, 1)           # more screen → higher burnout
-task_score = min(tasks / 8, 1)               # more tasks → higher burnout
-mood_score = (5 - mood) / 4                  # worse mood → higher burnout
+sleep_score = max(0, (8 - sleep) / 8)
+screen_score = min(screen / 10, 1)
+task_score = min(tasks / 8, 1)
+mood_score = (5 - mood) / 4
 
-# Weighted sum (tune weights if you want)
+sleep_penalty = sleep_score ** 1.5
+screen_penalty = screen_score ** 1.3
+
 burnout_raw = (
-    0.35 * sleep_score +
-    0.25 * screen_score +
+    0.35 * sleep_penalty +
+    0.25 * screen_penalty +
     0.25 * task_score +
     0.15 * mood_score
 )
 
-# Convert to 0–100 scale
-burnout_score = int(burnout_raw * 100)
-
+burnout_score = int(min(100, burnout_raw * 100))
 
 # -------- STATUS --------
 
 if burnout_score < 35:
     status = "Low"
     color = "🟢"
-    message = "You're doing well! Keep maintaining your balance."
+    message = "You're functioning well. Keep protecting your energy."
 elif burnout_score < 70:
     status = "Moderate"
     color = "🟡"
-    message = "You're starting to feel the pressure. Take small breaks."
+    message = "You're overloaded. Small changes now will help."
 else:
     status = "High"
     color = "🔴"
-    message = "High risk of burnout. You should slow down and recharge."
-
+    message = "You're near burnout. Recovery is needed."
 
 st.markdown(f"## Burnout Status: {color} **{status}**")
 st.info(message)
 
+# -------- SAVE HISTORY (ONCE PER DAY) --------
 
-
-
-
-
-
-# -------- SAVE HISTORY --------
 today = datetime.date.today()
 
 new_entry = {
@@ -78,62 +71,53 @@ new_entry = {
     "burnout": burnout_score
 }
 
-# Load existing data
 try:
     history = pd.read_csv("burnout_history.csv")
-except FileNotFoundError:
+    history["date"] = pd.to_datetime(history["date"]).dt.date
+except:
     history = pd.DataFrame(columns=["date", "burnout"])
 
-# Add today’s entry
-history = pd.concat([history, pd.DataFrame([new_entry])], ignore_index=True)
+if "last_saved" not in st.session_state:
+    st.session_state.last_saved = None
 
-# Save back
-history.to_csv("burnout_history.csv", index=False)
+if st.session_state.last_saved != today:
+    history = pd.concat([history, pd.DataFrame([new_entry])], ignore_index=True)
+    history.to_csv("burnout_history.csv", index=False)
+    st.session_state.last_saved = today
 
-
-
-
-
-
-# -------- GRAPH --------
 # -------- PIE CHART --------
-# -------- PIE CHART (FIXED) --------
-import matplotlib.pyplot as plt
 
 st.subheader("🥧 Burnout Risk Breakdown")
 
 healthy = max(0, 100 - burnout_score)
-risk = burnout_score
-stress = min(risk, 70)
-burnout = max(0, risk - 70)
+stress = min(burnout_score, 70)
+burnout = max(0, burnout_score - 70)
 
-labels = ["Healthy Zone", "Stress Zone", "Burnout Zone"]
+labels = ["Functioning", "Overloaded", "Burnout"]
 sizes = [healthy, stress, burnout]
 
-# Remove zero-value parts
 filtered = [(l, s) for l, s in zip(labels, sizes) if s > 0]
 labels, sizes = zip(*filtered)
 
 fig, ax = plt.subplots()
 ax.pie(sizes, labels=labels, autopct="%1.1f%%", startangle=90)
 ax.axis("equal")
-
 st.pyplot(fig)
 
-
-
 # -------- LINE CHART --------
+
 st.subheader("📈 Burnout Trend Over Time")
 
 if not history.empty:
     history["date"] = pd.to_datetime(history["date"])
+    st.line_chart(history.set_index("date")["burnout"])
 
-    st.line_chart(
-        history.set_index("date")["burnout"]
-    )
+    if len(history) >= 3:
+        trend = history["burnout"].diff().mean()
+        tomorrow = min(100, max(0, burnout_score + trend))
+        st.metric("Tomorrow’s predicted burnout", int(tomorrow))
 else:
-    st.write("No data yet. Start tracking today!")
-
+    st.write("No data yet.")
 
 # -------- AI EXPLANATION --------
 st.subheader("Why is your burnout like this?")
@@ -151,5 +135,3 @@ if st.button("Get AI Explanation"):
     """
 
     # --- OPENAI INTEGRATION ----
-
-    
