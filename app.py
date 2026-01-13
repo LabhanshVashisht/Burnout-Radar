@@ -5,6 +5,27 @@ import openai
 import datetime
 import matplotlib.pyplot as plt
 
+import firebase_admin
+from firebase_admin import credentials, firestore
+
+if not firebase_admin._apps:
+    cred = credentials.Certificate("firebase_key.json")
+    firebase_admin.initialize_app(cred)
+
+db = firestore.client()
+
+import streamlit.components.v1 as components
+
+params = st.query_params
+username = params.get("user")
+
+if not username:
+    st.error("Not logged in. Please log in from the website.")
+    st.stop()
+
+username = username.lower()
+
+
 # -------- CONFIG --------
 st.set_page_config(page_title="Burnout Radar", layout="centered")
 
@@ -68,40 +89,48 @@ else:
 st.markdown(f"## Burnout Status: {color} **{status}**")
 st.info(message)
 
-# -------- SAVE HISTORY (ONCE PER DAY) --------
+# -------- FIREBASE SAVE --------
+today = datetime.date.today().isoformat()
 
-today = datetime.date.today()
+user_ref = db.collection("users").document(username).collection("burnout_logs")
 
-new_entry = {
-    "date": today,
-    "burnout": burnout_score
-}
-
-try:
-    history = pd.read_csv("burnout_history.csv")
-    history["date"] = pd.to_datetime(history["date"]).dt.date
-except:
-    history = pd.DataFrame(columns=["date", "burnout"])
-
+# Save only once per day
 if "last_saved" not in st.session_state:
     st.session_state.last_saved = None
 
 if st.session_state.last_saved != today:
-    history = pd.concat([history, pd.DataFrame([new_entry])], ignore_index=True)
-    history.to_csv("burnout_history.csv", index=False)
+    user_ref.document(today).set({
+        "date": today,
+        "sleep": sleep,
+        "screen": screen,
+        "tasks": tasks,
+        "mood": mood,
+        "burnout": burnout_score,
+        "timestamp": firestore.SERVER_TIMESTAMP
+    })
     st.session_state.last_saved = today
 
+# -------- LOAD HISTORY --------
+docs = user_ref.order_by("timestamp").stream()
+
+data = []
+for d in docs:
+    data.append(d.to_dict())
+
+if data:
+    history = pd.DataFrame(data)
+    history["date"] = pd.to_datetime(history["date"])
+else:
+    history = pd.DataFrame(columns=["date", "burnout"])
+
+# -------- TABS --------
 st.subheader("📊 Burnout Insights")
 
-tab1, tab2 = st.tabs(["🥧 Breakdown", "📈 Trend"])
+tab1, tab2 = st.tabs(["📈 Trend", "🥧 Breakdown"])
 
-# ----------- CHARTS ---------
-
+# -------- TREND --------
 with tab1:
-    st.subheader("Burnout Over Time")
-
     if not history.empty:
-        history["date"] = pd.to_datetime(history["date"])
         st.line_chart(history.set_index("date")["burnout"])
 
         if len(history) >= 3:
@@ -111,9 +140,8 @@ with tab1:
     else:
         st.write("No data yet.")
 
+# -------- PIE --------
 with tab2:
-    st.subheader("Burnout Breakdown")
-
     healthy = max(0, 100 - burnout_score)
     stress = min(burnout_score, 70)
     burnout = max(0, burnout_score - 70)
@@ -134,7 +162,7 @@ with tab2:
     )
     ax.axis("equal")
     st.pyplot(fig)
-    
+
 # -------- WHAT IF SIMULATION --------
 
 st.subheader("🧪 What if I slept 1 hour more?")
