@@ -99,8 +99,14 @@ sizes = [healthy, stress, burnout]
 filtered = [(l, s) for l, s in zip(labels, sizes) if s > 0]
 labels, sizes = zip(*filtered)
 
-fig, ax = plt.subplots()
-ax.pie(sizes, labels=labels, autopct="%1.1f%%", startangle=90)
+fig, ax = plt.subplots(figsize=(1.75, 1.75))
+ax.pie(
+    sizes,
+    labels=labels,
+    autopct="%1.1f%%",
+    startangle=90,
+    textprops={"fontsize": 8}
+)
 ax.axis("equal")
 st.pyplot(fig)
 
