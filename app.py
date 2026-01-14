@@ -118,3 +118,51 @@ if history_rows:
 else:
     history_df = pd.DataFrame(columns=["date", "burnout"])
 
+# -------- INSIGHTS --------
+st.subheader("📊 Burnout Insights")
+
+tab1, tab2 = st.tabs(["📈 Trend", "🥧 Breakdown"])
+
+with tab1:
+    if not history_df.empty:
+        st.line_chart(history_df.set_index("date")["burnout"])
+    else:
+        st.write("No data yet. Save your first entry.")
+
+with tab2:
+    healthy_zone = max(0, 100 - burnout_score)
+    stress_zone = min(burnout_score, 70)
+    burnout_zone = max(0, burnout_score - 70)
+
+    labels = ["Functioning", "Overloaded", "Burnout"]
+    sizes = [healthy_zone, stress_zone, burnout_zone]
+
+    filtered = [(l, s) for l, s in zip(labels, sizes) if s > 0]
+    labels, sizes = zip(*filtered)
+
+    fig, ax = plt.subplots(figsize=(1.75, 1.75))
+    ax.pie(
+        sizes,
+        labels=labels,
+        autopct="%1.0f%%",
+        startangle=90,
+        textprops={"fontsize": 6}
+    )
+    ax.axis("equal")
+    st.pyplot(fig)
+
+# -------- WHAT IF SIMULATION --------
+st.subheader("🧪 What if I slept 1 hour more?")
+
+if st.button("Simulate Better Sleep"):
+    improved_sleep = min(8, sleep + 1)
+    new_sleep_score = max(0, (8 - improved_sleep) / 8)
+
+    improved_burnout = (
+        0.35 * (new_sleep_score ** 1.5) +
+        0.25 * (screen_score ** 1.3) +
+        0.25 * task_score +
+        0.15 * mood_score
+    ) * 100
+
+    st.success(f"Your burnout would drop to {int(improved_burnout)}")
