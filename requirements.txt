@@ -1,0 +1,8 @@
+streamlit
+firebase-admin
+pandas
+matplotlib
+google-generativeai
+google-auth
+google-auth-oauthlib
+google-api-python-client

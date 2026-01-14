@@ -168,7 +168,7 @@ Extreme behavior (very low sleep, excessive screen time) is penalized more heavi
 ### 1️⃣ Install Dependencies
 
 ```bash
-pip install streamlit firebase-admin google-api-python-client google-auth google-auth-oauthlib google-generativeai
+pip install -r requirements.txt
 ```
 
 ---
