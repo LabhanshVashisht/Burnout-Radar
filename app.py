@@ -98,3 +98,23 @@ if st.button("Save to Firebase"):
         json.dump(data, f, indent=2)
 
     st.success("Saved to Firebase and local JSON")
+
+# -------- LOAD HISTORY FROM FIREBASE --------
+user_ref = (
+    db.collection("users")
+      .document(username)
+      .collection("burnout_logs")
+)
+
+docs = user_ref.order_by("date").stream()
+
+history_rows = []
+for doc in docs:
+    history_rows.append(doc.to_dict())
+
+if history_rows:
+    history_df = pd.DataFrame(history_rows)
+    history_df["date"] = pd.to_datetime(history_df["date"])
+else:
+    history_df = pd.DataFrame(columns=["date", "burnout"])
+
