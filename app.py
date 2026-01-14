@@ -5,6 +5,12 @@ import openai
 import datetime
 import matplotlib.pyplot as plt
 
+import json
+from streamlit.web.server.websocket_headers import _get_websocket_headers
+
+headers = _get_websocket_headers()
+
+
 import firebase_admin
 from firebase_admin import credentials, firestore
 
@@ -18,6 +24,19 @@ import streamlit.components.v1 as components
 
 params = st.query_params
 username = params.get("user")
+
+if params.get("api"):
+    today = datetime.date.today().isoformat()
+
+    doc = db.collection("users").document(username)\
+        .collection("burnout_logs").document(today).get()
+
+    if doc.exists:
+        st.json(doc.to_dict())
+    else:
+        st.json({})
+    st.stop()
+
 
 if not username:
     st.error("Not logged in. Please log in from the website.")

@@ -13,6 +13,19 @@
 </head>
 
 <body>
+
+
+  <script>
+const params = new URLSearchParams(window.location.search);
+const urlUser = params.get("user");
+
+if (urlUser) {
+  localStorage.setItem("username", urlUser);
+}
+</script>
+
+
+
 <div class="wrap">
 
   <!-- SIDEBAR -->
@@ -26,6 +39,10 @@
 </aside>
 
 
+
+
+
+
   <main>
 
     <!-- HERO -->
@@ -36,7 +53,7 @@
             <img src="profile.png" alt="profile">
           </div>
           <div>
-            <div class="hero-name">Good Day, Simi!</div>
+            <div class="hero-name" id="greeting"></div>
             <div class="hero-role">User · Student</div>
           </div>
         </div>
@@ -47,24 +64,38 @@
       <div id="current-day" class="hero-day"></div>
     </section>
 
+    <script>
+const storedUser = localStorage.getItem("username");
+
+if (storedUser) {
+  const niceName = storedUser.charAt(0).toUpperCase() + storedUser.slice(1);
+  document.getElementById("greeting").innerText = "Good Day, " + niceName + "!";
+}
+</script>
+
     <!-- STATS -->
     <div class="stats">
-      <div class="card"><h4>SLEEP</h4><div class="val">7 hrs</div></div>
-      <div class="card"><h4>SCREEN TIME</h4><div class="val">5 hrs</div></div>
-      <div class="card"><h4>WORKLOAD</h4><div class="val">High</div></div>
+      <div class="card"><h4>SLEEP</h4><div class="val" id="sleepVal">--</div></div>
+      <div class="card"><h4>SCREEN TIME</h4><div class="val" id="screenVal">--</div></div>
+      <div class="card"><h4>WORKLOAD</h4><div class="val" id="taskVal">--</div></div>
     </div>
 
+    <script>
+fetch("http://localhost:8501?user=" + storedUser + "&api=1")
+  .then(res => res.json())
+  .then(data => {
+    if (!data || !data.sleep) return;
 
-   <script>
-const params = new URLSearchParams(window.location.search);
-const urlUser = params.get("user");
+    document.getElementById("sleepVal").innerText = data.sleep + " hrs";
+    document.getElementById("screenVal").innerText = data.screen + " hrs";
 
-if (urlUser) {
-  localStorage.setItem("username", urlUser);
-}
-
-const storedUser = localStorage.getItem("username");
+    if (data.tasks <= 3) document.getElementById("taskVal").innerText = "Low";
+    else if (data.tasks <= 6) document.getElementById("taskVal").innerText = "Medium";
+    else document.getElementById("taskVal").innerText = "High";
+  });
 </script>
+
+
 
 
 <br>
