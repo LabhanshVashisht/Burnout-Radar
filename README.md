@@ -66,7 +66,7 @@ The focus is **clarity over motivation** and **control over guilt**.
 
 For demonstration and evaluation purposes:
 
-* **Username:** simi
+* **Username:** Simi
 * **Password:** 1234
 
 ---
@@ -95,7 +95,7 @@ For demonstration and evaluation purposes:
 
 ### AI Engine
 
-* Google Gemini (`gemini-1.5-flash`)
+* Google Gemini (`gemini-2.5-flash`)
 
 ---
 
@@ -105,7 +105,6 @@ For demonstration and evaluation purposes:
 Burnout-Radar/
 │
 ├── app.py                      # Streamlit entry point
-├── profile.png                 # User profile image
 ├── style.css                   # Styling for HTML dashboard
 ├── script.js                   # UI helpers
 ├── index.html                  # Advanced HTML dashboard
@@ -150,35 +149,12 @@ Extreme behavior (very low sleep, excessive screen time) is penalized more heavi
 
 ---
 
-## 🤖 AI Explanation Flow
-
-### Inputs
-
-* Sleep duration
-* Screen time
-* Task load
-* Mood rating
-* Optional user-written stress context
-
-### Processing
-
-* Data is sent to Google Gemini
-* Context-aware reasoning is applied
-
-### Output
-
-* Explanation of burnout level
-* Key contributors
-* Practical, realistic suggestions
-
----
-
 ## ▶️ How to Run the Project
 
 ### 1️⃣ Install Dependencies
 
 ```bash
-pip install streamlit firebase-admin google-api-python-client google-auth google-auth-oauthlib google-generativeai
+pip install -r requirements.txt
 ```
 
 ---
@@ -195,7 +171,24 @@ Make sure this file is **not committed to version control**.
 
 ---
 
-### 3️⃣ Run the Streamlit App
+### 3️⃣ Firebase Configuration (Service Account)
+
+This project uses **Firebase Firestore** for cloud data persistence.
+
+To enable Firebase access:
+
+1. Create a Firebase project from the Firebase Console.
+2. Generate a **Service Account key** from:
+   Project Settings → Service Accounts → Generate new private key
+3. Download the JSON file and place it in the project root as:
+
+```text
+firebase_key.json
+```
+
+---
+
+### 4️⃣ Run the Streamlit App
 
 ```bash
 streamlit run app.py
@@ -203,7 +196,7 @@ streamlit run app.py
 
 ---
 
-### 4️⃣ (Optional) Run HTML Dashboard
+### 5️⃣ (Optional) Run HTML Dashboard
 
 ```bash
 python -m http.server 8000
