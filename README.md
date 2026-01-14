@@ -10,9 +10,9 @@ This project is **not a motivation app**. It is an **early-warning and awareness
 
 Burnout Radar helps college students:
 
-- Visualize workload and pressure clearly
-- Understand *why* burnout risk is increasing
-- Take early, informed action before performance and mental health decline
+* Visualize workload and pressure clearly
+* Understand *why* burnout risk is increasing
+* Take early, informed action before performance and mental health decline
 
 The focus is **clarity over motivation** and **control over guilt**.
 
@@ -22,42 +22,43 @@ The focus is **clarity over motivation** and **control over guilt**.
 
 ### 🖥️ Student Dashboard (UI Module)
 
-- Clean, card-based interface
-- Profile overview with tasks and calendar context
-- Google Calendar (read-only) integration
-- Daily workload visibility
-- Privacy-first design
-- Responsive for desktop and mobile
+* Clean, card-based interface
+* Profile overview with tasks and calendar context
+* Google Calendar (read-only) integration
+* Daily workload visibility
+* Privacy-first design
+* Responsive for desktop and mobile
 
 ---
 
 ### 📅 Calendar-Aware Workload Tracking
 
-- Reads upcoming classes, exams, and deadlines
-- Visualizes workload density
-- Read-only access (no event modification)
-- Calendar permissions can be revoked anytime
+* Reads upcoming classes, exams, and deadlines
+* Visualizes workload density
+* Read-only access (no event modification)
+* Calendar permissions can be revoked anytime
 
 ---
 
 ### 📊 Burnout Analysis Engine (Logic Module)
 
-- Burnout Risk Score (0–100)
-- Historical trend visualization
-- Factor-wise burnout breakdown
-- "What-if" simulations (e.g., effect of extra sleep)
-- Manual save control (no automatic or background writes)
+* Burnout Risk Score (0–100)
+* Historical trend visualization
+* Factor-wise burnout breakdown
+* "What-if" simulations (e.g., effect of extra sleep)
+* Manual save control (no automatic or background writes)
 
 ---
 
 ### 🤖 AI-Powered Burnout Explanation
 
-- Powered by **Google Gemini**
-- Explains:
-  - Why the burnout level is high or low
-  - Key contributing factors
-  - Realistic, actionable suggestions
-- Uses both behavioral data and user-written context
+* Powered by **Google Gemini**
+* Explains:
+
+  * Why the burnout level is high or low
+  * Key contributing factors
+  * Realistic, actionable suggestions
+* Uses both behavioral data and user-written context
 
 ---
 
@@ -65,31 +66,36 @@ The focus is **clarity over motivation** and **control over guilt**.
 
 For demonstration and evaluation purposes:
 
-- **Username:** simi
-- **Password:** 1234
+* **Username:** simi
+* **Password:** 1234
 
 ---
 
 ## 🧩 Technology Stack
 
 ### Frontend / UI
-- HTML
-- CSS
-- JavaScript
+
+* HTML
+* CSS
+* JavaScript
 
 ### Backend / Logic
-- Python
-- Streamlit application architecture
+
+* Python
+* Streamlit application architecture
 
 ### Calendar Integration
-- Google Calendar API (read-only)
+
+* Google Calendar API (read-only)
 
 ### Storage
-- Firebase Firestore (cloud persistence)
-- Local per-user JSON files (fast demo updates)
+
+* Firebase Firestore (cloud persistence)
+* Local per-user JSON files (fast demo updates)
 
 ### AI Engine
-- Google Gemini (`gemini-1.5-flash`)
+
+* Google Gemini (`gemini-1.5-flash`)
 
 ---
 
@@ -117,14 +123,15 @@ Burnout-Radar/
 
 ## 🔐 User Data Handling & Privacy
 
-- Each user has a **separate local JSON file**
-- Data is written **only when the user clicks Save**
-- No background auto-saving
-- No cross-user overwrites
-- Firebase is used for:
-  - Cloud persistence
-  - Analytics
-  - Demo credibility
+* Each user has a **separate local JSON file**
+* Data is written **only when the user clicks Save**
+* No background auto-saving
+* No cross-user overwrites
+* Firebase is used for:
+
+  * Cloud persistence
+  * Analytics
+  * Demo credibility
 
 The system is designed to respect user control and consent.
 
@@ -134,10 +141,10 @@ The system is designed to respect user control and consent.
 
 Burnout is calculated using weighted, non-linear factors:
 
-- Sleep debt
-- Screen time overload
-- Task and deadline pressure
-- Mood decline
+* Sleep debt
+* Screen time overload
+* Task and deadline pressure
+* Mood decline
 
 Extreme behavior (very low sleep, excessive screen time) is penalized more heavily than small fluctuations, making the score more realistic and sensitive.
 
@@ -146,20 +153,23 @@ Extreme behavior (very low sleep, excessive screen time) is penalized more heavi
 ## 🤖 AI Explanation Flow
 
 ### Inputs
-- Sleep duration
-- Screen time
-- Task load
-- Mood rating
-- Optional user-written stress context
+
+* Sleep duration
+* Screen time
+* Task load
+* Mood rating
+* Optional user-written stress context
 
 ### Processing
-- Data is sent to Google Gemini
-- Context-aware reasoning is applied
+
+* Data is sent to Google Gemini
+* Context-aware reasoning is applied
 
 ### Output
-- Explanation of burnout level
-- Key contributors
-- Practical, realistic suggestions
+
+* Explanation of burnout level
+* Key contributors
+* Practical, realistic suggestions
 
 ---
 
@@ -168,17 +178,20 @@ Extreme behavior (very low sleep, excessive screen time) is penalized more heavi
 ### 1️⃣ Install Dependencies
 
 ```bash
-pip install -r requirements.txt
+pip install streamlit firebase-admin google-api-python-client google-auth google-auth-oauthlib google-generativeai
 ```
 
 ---
 
-### 2️⃣ Set Environment Variables (AI)
+### 2️⃣ Environment Configuration (.env)
 
-**Windows (PowerShell):**
-```powershell
-setx GEMINI_API_KEY "your_gemini_key"
+Create a `.env` file in the project root with the following contents:
+
+```env
+GEMINI_API_KEY=your_gemini_api_key_here
 ```
+
+Make sure this file is **not committed to version control**.
 
 ---
 
@@ -197,43 +210,32 @@ python -m http.server 8000
 ```
 
 Open in browser:
+
 ```
 http://localhost:8000/index.html?user=simi
 ```
 
 ---
 
-## ⚠️ Design Decisions
-
-- ❌ No auto-saving → avoids noisy, inaccurate data
-- ❌ No iframe messaging → avoids browser security issues
-- ❌ No cross-origin hacks → avoids CORS failures
-- ✅ Manual save → user control
-- ✅ Local JSON → instant dashboard updates
-- ✅ Firebase → persistence and credibility
-
-Built to **work reliably under hackathon pressure**, not to look clever and fail.
-
 ---
 
 ## 📌 Future Improvements
 
-- Proper authentication (OAuth / Firebase Auth)
-- Multi-day history per user
-- Burnout prediction (next-day / next-week)
-- AI response caching
-- Report export (PDF)
-- Mobile app wrapper
+* Proper authentication (OAuth / Firebase Auth)
+* Multi-day history per user
+* Burnout prediction (next-day / next-week)
+* AI response caching
+* Report export (PDF)
+* Mobile app wrapper
 
 ---
 
 ## 👥 Team
 
-- **Team Name:** Chicklers
-- **Event:** Innovate 3.0
-- **Domain:** AI · Mental Health · Student Technology
+* **Team Name:** Chicklers
+* **Event:** Innovate 3.0
+* **Domain:** AI · Mental Health · Student Technology
 
 ---
 
 If something looks calm and simple here, it’s because a lot of chaos was removed on purpose.
-
