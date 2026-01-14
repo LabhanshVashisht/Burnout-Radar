@@ -156,19 +156,29 @@ if (storedUser) {
 </div>
 
 <script>
-window.addEventListener("message", (event) => {
-  const data = event.data;
-  if (!data || !data.burnout) return;
+async function loadBurnoutData() {
+  try {
+    const res = await fetch("latest_data.json");
+    const data = await res.json();
 
-  document.getElementById("sleepVal").innerText = data.sleep + " hrs";
-  document.getElementById("screenVal").innerText = data.screen + " hrs";
+    document.getElementById("sleepVal").innerText = data.sleep + " hrs";
+    document.getElementById("screenVal").innerText = data.screen + " hrs";
 
-  document.getElementById("taskVal").innerText =
-    data.tasks <= 3 ? "Low" :
-    data.tasks <= 6 ? "Medium" : "High";
+    document.getElementById("taskVal").innerText =
+      data.tasks <= 3 ? "Low" :
+      data.tasks <= 6 ? "Medium" : "High";
 
-  document.querySelector(".circle").innerText = data.burnout + "%";
-});
+    document.querySelector(".circle").innerText = data.burnout + "%";
+    document.querySelector(".burnout h2").innerText =
+      data.status + " Risk";
+
+  } catch (e) {
+    console.warn("Waiting for burnout data...");
+  }
+}
+
+loadBurnoutData();
+setInterval(loadBurnoutData, 2000);
 </script>
 
 <script src="script.js"></script>
