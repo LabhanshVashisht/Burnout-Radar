@@ -226,3 +226,99 @@ html,body{
 .side-icons a.active{
   background:rgba(255,255,255,0.35);
 }
+
+body {
+    font-family: Arial, sans-serif;
+    background: #f4f6fa;
+}
+
+.container {
+    width: 450px;
+    margin: 40px auto;
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+}
+
+.add-box {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr auto;
+    gap: 8px;
+    margin-bottom: 15px;
+}
+
+input, select {
+    padding: 8px;
+}
+
+button {
+    padding: 8px 12px;
+    cursor: pointer;
+}
+
+ul {
+    list-style: none;
+    padding: 0;
+}
+
+li {
+    background: #eef1f7;
+    margin: 8px 0;
+    padding: 10px;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+/* Priority colors */
+.high {
+    border-left: 6px solid #ef4444;
+}
+
+.medium {
+    border-left: 6px solid #f59e0b;
+}
+
+.low {
+    border-left: 6px solid #10b981;
+}
+
+.assignment-card {
+  margin-top: 24px;
+}
+
+.lists {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  margin-top: 16px;
+}
+
+.task {
+  background: #eef1f7;
+  padding: 10px;
+  border-radius: 8px;
+  margin-bottom: 8px;
+  cursor: pointer;
+}
+
+.task small {
+  display: block;
+  color: #555;
+  font-size: 0.8rem;
+}
+
+.high { border-left: 5px solid #ef4444; }
+.medium { border-left: 5px solid #f59e0b; }
+.low { border-left: 5px solid #10b981; }
+
+.overdue-task {
+  background: #ffe4e4;
+}
+
+.stat .val {
+  font-size: 1.8rem;
+  font-weight: 600;
+}
+
+.stat .overdue { color: #ef4444; }
+.stat .completed { color: #10b981; }

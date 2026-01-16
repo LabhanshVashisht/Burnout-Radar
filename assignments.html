@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Assignments | Burnout Radar</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+<div class="wrap">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="brand">Burnout</div>
+    <div class="side-icons">
+      <a href="index.html" class="icon">🏠</a>
+      <a href="assignments.html" class="icon active">📊</a>
+      <a href="settings.html" class="icon">⚙️</a>
+    </div>
+  </aside>
+
+  <main>
+
+    <!-- HERO -->
+    <section class="hero">
+      <h2 class="hero-name">📊 Assignments</h2>
+      <div class="hero-day">Track deadlines & workload</div>
+    </section>
+
+    <!-- STATS -->
+    <div class="stats">
+      <div class="card stat">
+        <h4>UPCOMING</h4>
+        <div class="val" id="upcomingCount">0</div>
+      </div>
+      <div class="card stat">
+        <h4>OVERDUE</h4>
+        <div class="val overdue" id="overdueCount">0</div>
+      </div>
+      <div class="card stat">
+        <h4>COMPLETED</h4>
+        <div class="val completed" id="completedCount">0</div>
+      </div>
+    </div>
+
+    <!-- ASSIGNMENTS CARD -->
+    <section class="card assignment-card">
+
+      <h3>📌 Manage Assignments</h3>
+
+      <div class="add-box">
+        <input type="text" id="assignmentInput" placeholder="Assignment name">
+        <input type="date" id="dueDateInput">
+        <select id="priorityInput">
+          <option value="Low">Low</option>
+          <option value="Medium">Medium</option>
+          <option value="High">High</option>
+        </select>
+        <button onclick="addAssignment()">Add</button>
+      </div>
+
+      <div class="lists">
+        <div>
+          <h4>🕒 Pending</h4>
+          <ul id="pendingList"></ul>
+        </div>
+
+        <div>
+          <h4>✅ Completed</h4>
+          <ul id="completedList"></ul>
+        </div>
+      </div>
+
+    </section>
+
+  </main>
+</div>
+
+<script src="assignment.js"></script>
+</body>
+</html>
