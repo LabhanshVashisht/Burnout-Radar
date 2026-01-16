@@ -18,7 +18,9 @@ client = genai.Client(api_key=API_KEY)
 import firebase_admin
 from firebase_admin import credentials, firestore
 
-if not firebase_admin._apps:
+try:
+    firebase_admin.get_app()
+except ValueError:
     cred = credentials.Certificate("firebase_key.json")
     firebase_admin.initialize_app(cred)
 
